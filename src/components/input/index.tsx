@@ -9,11 +9,11 @@ export const Input = forwardRef<HTMLInputElement, InputInterface>(
   ({ label, isError, ...props }, ref) => {
     return (
       <div className="w-full flex flex-col justify-center items-start gap-2">
-        <span className="">{label}</span>
+        <span className="text-xl font-bold">{label}</span>
         <input
           {...props}
           ref={ref}
-          className="w-full rounded-md border-2 border-blue-500"
+          className="w-full rounded-md border-2 border-blue-500 p-2"
         />
         {isError && <span className="text-red-500">{isError}</span>}
       </div>

@@ -2,6 +2,7 @@ import { Form, Link, Outlet, useLoaderData, useParams } from "react-router-dom";
 import { Card } from "../components/card";
 import { Todo } from "../types/todo";
 import { SyntheticEvent, useMemo } from "react";
+import { Add, Delete, Edit } from "../icons";
 
 export function TodoTemplate() {
   const { todos } = useLoaderData() as { todos: Todo[] };
@@ -43,26 +44,26 @@ export function TodoTemplate() {
               <button
                 type="submit"
                 disabled={isEditable}
-                className="bg-red-500 text-white hover:bg-red-400 transition-all disabled:bg-slate-300 disabled:text-slate-600"
+                className="hover:bg-red-100 border-2 border-red-600 transition-all disabled:bg-slate-100 disabled:border-slate-300"
               >
-                삭제하기
+                <Delete color={isEditable ? "#cbd5e1" : "#dc2626"} />
               </button>
             </Form>
             <Link to={`${todoId}/edit`}>
               <button
                 type="button"
                 disabled={isEditable}
-                className="bg-blue-600 text-white hover:bg-blue-500 transition-all disabled:bg-slate-300 disabled:text-slate-600"
+                className="hover:bg-blue-100 border-2 border-blue-600 transition-all disabled:bg-slate-100 disabled:border-slate-300"
               >
-                수정하기
+                <Edit color={isEditable ? "#cbd5e1" : "#2563eb"} />
               </button>
             </Link>
             <Link to="create">
               <button
                 type="button"
-                className="bg-blue-600 text-white hover:bg-blue-500 transition-all disabled:bg-slate-300 disabled:text-slate-600"
+                className="hover:bg-blue-100 border-2 border-blue-600 transition-all "
               >
-                추가하기
+                <Add color="#2563eb" />
               </button>
             </Link>
           </div>

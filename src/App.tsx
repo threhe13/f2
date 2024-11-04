@@ -19,8 +19,9 @@ function App() {
       element: <RootLayout />,
       children: [
         {
-          path: "todos",
+          path: "/",
           element: <Todo />,
+          errorElement: <div>oops</div>,
           loader: todosLoader,
           children: [
             {

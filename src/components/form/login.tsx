@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useMemo, useState } from "react";
+import { SyntheticEvent, useMemo, useState } from "react";
 import { Input } from "../input";
 import { useAuth } from "../../hooks/useAuth";
 

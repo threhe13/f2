@@ -1,9 +1,11 @@
 import { getTodoById } from "../../../libs/data";
+import { TodoActionParams } from "../../../types/todo";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function loader({ params }: { params: any }) {
+export async function loader({ params }: { params: unknown }) {
   const token = localStorage.getItem("token");
   if (!token) return null;
-  const todo = await getTodoById(token, params.todoId);
+
+  const { todoId } = params as TodoActionParams;
+  const todo = await getTodoById(token, todoId);
   return { todo: todo.data.data };
 }
