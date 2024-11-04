@@ -42,11 +42,10 @@ export const SignupForm = () => {
     return false;
   }, [formState]);
 
-  const handleSignupFormSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
+  const handleSignupFormSubmit = async (
+    event: SyntheticEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-
-    // TODO: Validation
-
     create(formState);
     if (!isError) setFormState({ email: "", password: "" });
   };

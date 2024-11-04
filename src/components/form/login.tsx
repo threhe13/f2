@@ -42,15 +42,13 @@ export const LoginForm = () => {
     return false;
   }, [formState]);
 
-  const handleLoginFormSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
+  const handleLoginFormSubmit = async (
+    event: SyntheticEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     login(formState);
     if (!isError) setFormState({ email: "", password: "" });
   };
-
-  useEffect(() => {
-    console.log(isDisabled, isError, isLoading);
-  }, [isDisabled, isError, isLoading]);
 
   return (
     <form
