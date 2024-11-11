@@ -1,7 +1,11 @@
-import { useLoaderData, useNavigate, useSubmit } from "react-router-dom";
-import { SyntheticEvent, useMemo, useState } from "react";
+import { SyntheticEvent, useCallback, useMemo, useState } from "react";
+import { useNavigate, useParams, useSubmit } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+
 import { TodoForm } from "../../../../components/form/todo";
-import { Todo } from "../../../../types/todo";
+import { todoByIdQuery } from "../loader";
+
+import type { Todo } from "../../../../types/todo";
 
 type TodoFormType = {
   title: string;
@@ -9,7 +13,14 @@ type TodoFormType = {
 };
 
 export const EditTodoById = () => {
-  const { todo } = useLoaderData() as { todo: Todo };
+  const params = useParams();
+  const todoId = useMemo(() => {
+    return params.todoId as string;
+  }, [params]);
+
+  const { data: todo } = useQuery(todoByIdQuery(todoId)) as {
+    data: Todo;
+  };
   const navigate = useNavigate();
   const submit = useSubmit();
 
@@ -36,6 +47,10 @@ export const EditTodoById = () => {
     return false;
   }, [todo]);
 
+  const saveEdit = useCallback(() => {
+    navigate(`/${todoId}`);
+  }, [navigate, todoId]);
+
   return (
     <TodoForm
       type="edit"
@@ -43,9 +58,7 @@ export const EditTodoById = () => {
       isDisabled={isDisabled}
       title={formState.title}
       content={formState.content}
-      afterEdit={() => {
-        navigate(-1);
-      }}
+      afterEdit={saveEdit}
     />
   );
 };

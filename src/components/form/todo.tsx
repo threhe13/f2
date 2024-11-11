@@ -1,7 +1,8 @@
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useMemo } from "react";
+import { Form } from "react-router-dom";
+
 import { Input } from "../input";
 import { Textarea } from "../text-area";
-import { Form } from "react-router-dom";
 
 interface TodoFormInterface {
   type: "create" | "edit";
@@ -22,9 +23,18 @@ export const TodoForm = ({
   updateForm,
   afterEdit,
 }: TodoFormInterface) => {
+  const formMethod: "POST" | "PUT" = useMemo(() => {
+    if (type === "create") {
+      return "POST";
+    } else if (type === "edit") {
+      return "PUT";
+    }
+    return "POST";
+  }, [type]);
+
   return (
     <Form
-      method="post"
+      method={formMethod}
       className="w-full h-full flex flex-col justify-center items-center p-4 gap-4"
     >
       <Input

@@ -1,19 +1,21 @@
 import { redirect } from "react-router-dom";
-import { createTodo } from "../../../libs/data";
-import TokenStorage from "../../../libs/storage";
 
-export async function action({ request }: { request: Request }) {
-  const storage = new TokenStorage("token");
+import type { QueryClient } from "@tanstack/react-query";
 
-  const token = storage.getToken();
-  if (!token) return;
+import DataLoader from "../../../libs/data";
 
-  const formData = await request.formData();
-  const todoData = await createTodo(token, {
-    title: formData.get("title") as string,
-    content: formData.get("content") as string,
-  });
-  const todo = todoData.data.data;
+export const action =
+  (queryClient: QueryClient) =>
+  async ({ request }: { request: Request }) => {
+    const { createTodo } = DataLoader();
 
-  return redirect(`/${todo.id}`);
-}
+    const formData = await request.formData();
+    const todoData = await createTodo({
+      title: formData.get("title") as string,
+      content: formData.get("content") as string,
+    });
+    await queryClient.invalidateQueries({ queryKey: ["todos"] });
+    const todo = todoData.data.data;
+
+    return redirect(`/${todo.id}`);
+  };

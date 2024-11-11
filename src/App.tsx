@@ -11,8 +11,11 @@ import { action as todoCreateAction } from "./routes/todo/create/action";
 import { action as todoEditAction } from "./routes/todo/id/edit/action";
 import { action as todoDeleteAction } from "./routes/todo/id/delete";
 import { EditTodoById } from "./routes/todo/id/edit";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -22,29 +25,29 @@ function App() {
           path: "/",
           element: <Todo />,
           errorElement: <div>oops</div>,
-          loader: todosLoader,
+          loader: todosLoader(queryClient),
           children: [
             {
               path: ":todoId",
               element: <TodoById />,
-              loader: todoByIdLoader,
+              loader: todoByIdLoader(queryClient),
               errorElement: <div>삭제된 할 일 입니다.</div>,
             },
             {
               path: ":todoId/delete",
-              action: todoDeleteAction,
+              action: todoDeleteAction(queryClient),
               errorElement: <div>Oops! There was an error.</div>,
             },
             {
               path: ":todoId/edit",
               element: <EditTodoById />,
-              loader: todoByIdLoader,
-              action: todoEditAction,
+              loader: todoByIdLoader(queryClient),
+              action: todoEditAction(queryClient),
             },
             {
               path: "create",
               element: <TodoCreate />,
-              action: todoCreateAction,
+              action: todoCreateAction(queryClient),
             },
           ],
         },
@@ -56,7 +59,11 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

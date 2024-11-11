@@ -1,46 +1,61 @@
 import axios from "axios";
+import TokenStorage from "./storage";
 
-const baseInstance = axios.create({
-  baseURL: "http://localhost:8080",
-  timeout: 3600,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+function DataLoader() {
+  const storage: TokenStorage = new TokenStorage("token");
+  const token = storage.getToken();
 
-const getTodos = (token: string) => {
-  return baseInstance.get("/todos", { headers: { Authorization: token } });
-};
+  if (!token) {
+    throw new Error("[dataLoader] Token을 찾을 수 없습니다.");
+  }
 
-const getTodoById = (token: string, id: string) => {
-  return baseInstance.get(`/todos/${id}`, {
-    headers: { Authorization: token },
-  });
-};
+  const baseUrl = (function () {
+    return axios.create({
+      baseURL: "http://localhost:8080",
+      timeout: 3600,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  })();
 
-const createTodo = (
-  token: string,
-  todo: { title: string; content: string }
-) => {
-  return baseInstance.post("/todos", todo, {
-    headers: { Authorization: token },
-  });
-};
+  function getTodos() {
+    return baseUrl.get("/todos", {
+      headers: { Authorization: token },
+    });
+  }
 
-const updateTodo = (
-  token: string,
-  id: string,
-  todo: { title: string; content: string }
-) => {
-  return baseInstance.put(`/todos/${id}`, todo, {
-    headers: { Authorization: token },
-  });
-};
+  function getTodoById(id: string) {
+    return baseUrl.get(`/todos/${id}`, {
+      headers: { Authorization: token },
+    });
+  }
 
-const deleteTodo = (token: string, id: string) => {
-  return baseInstance.delete(`/todos/${id}`, {
-    headers: { Authorization: token },
-  });
-};
+  function createTodo(todo: { title: string; content: string }) {
+    return baseUrl.post("/todos", todo, {
+      headers: { Authorization: token },
+    });
+  }
 
-export { getTodos, getTodoById, createTodo, updateTodo, deleteTodo };
+  function updateTodo(id: string, todo: { title: string; content: string }) {
+    return baseUrl.put(`/todos/${id}`, todo, {
+      headers: { Authorization: token },
+    });
+  }
+
+  function deleteTodo(id: string) {
+    return baseUrl.delete(`/todos/${id}`, {
+      headers: { Authorization: token },
+    });
+  }
+
+  return {
+    getTodos,
+    getTodoById,
+    createTodo,
+    updateTodo,
+    deleteTodo,
+  };
+}
+
+export default DataLoader;

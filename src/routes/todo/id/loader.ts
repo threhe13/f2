@@ -1,14 +1,24 @@
-import { getTodoById } from "../../../libs/data";
-import TokenStorage from "../../../libs/storage";
+import type { QueryClient } from "@tanstack/react-query";
+
+import DataLoader from "../../../libs/data";
 import { TodoActionParams } from "../../../types/todo";
 
-export async function loader({ params }: { params: unknown }) {
-  const storage = new TokenStorage("token");
+export const todoByIdQuery = (id: string) => ({
+  queryKey: ["todos", id],
+  queryFn: async () => {
+    const { getTodoById } = DataLoader();
+    const todoById = await getTodoById(id);
+    return todoById.data.data;
+  },
+});
 
-  const token = storage.getToken();
-  if (!token) return;
+export const loader =
+  (queryClient: QueryClient) =>
+  async ({ params }: { params: unknown }) => {
+    const { todoId } = params as TodoActionParams;
 
-  const { todoId } = params as TodoActionParams;
-  const todo = await getTodoById(token, todoId);
-  return { todo: todo.data.data };
-}
+    const query = todoByIdQuery(todoId);
+    const queryData = queryClient.ensureQueryData(query);
+
+    return queryData;
+  };

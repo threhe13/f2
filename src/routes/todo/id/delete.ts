@@ -1,17 +1,27 @@
 import { redirect } from "react-router-dom";
-import { deleteTodo } from "../../../libs/data";
+
+import type { QueryClient } from "@tanstack/react-query";
+
+import DataLoader from "../../../libs/data";
 import { TodoActionParams } from "../../../types/todo";
-import TokenStorage from "../../../libs/storage";
 
-export async function action({ params }: { params: unknown }) {
-  const storage = new TokenStorage("token");
+export const deleteTodoByIdQuery = (id: string) => ({
+  queryKey: ["todos", id],
+  queryFn: async () => {
+    const { deleteTodo } = DataLoader();
+    const deletedTodo = await deleteTodo(id);
+    return deletedTodo.data.data;
+  },
+});
 
-  const token = storage.getToken();
-  if (!token) return;
+export const action =
+  (queryClient: QueryClient) =>
+  async ({ params }: { params: unknown }) => {
+    const { todoId } = params as TodoActionParams;
+    const query = deleteTodoByIdQuery(todoId);
+    queryClient.fetchQuery(query);
 
-  const { todoId } = params as TodoActionParams;
-  console.log(todoId);
-  await deleteTodo(token, todoId);
+    await queryClient.invalidateQueries({ queryKey: ["todos"] });
 
-  return redirect("/");
-}
+    return redirect("/");
+  };
