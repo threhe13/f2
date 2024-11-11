@@ -16,9 +16,7 @@ export const loader =
   (queryClient: QueryClient) =>
   async ({ params }: { params: unknown }) => {
     const { todoId } = params as TodoActionParams;
-
     const query = todoByIdQuery(todoId);
-    const queryData = queryClient.ensureQueryData(query);
-
+    const queryData = await queryClient.ensureQueryData(query);
     return queryData;
   };

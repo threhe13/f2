@@ -19,9 +19,7 @@ export const action =
   async ({ params }: { params: unknown }) => {
     const { todoId } = params as TodoActionParams;
     const query = deleteTodoByIdQuery(todoId);
-    queryClient.fetchQuery(query);
-
+    await queryClient.fetchQuery(query);
     await queryClient.invalidateQueries({ queryKey: ["todos"] });
-
     return redirect("/");
   };

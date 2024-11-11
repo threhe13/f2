@@ -28,7 +28,8 @@ export const action =
     };
 
     const query = updateTodoByIdQuery(todoId, getFormData);
-    queryClient.fetchQuery(query);
+    const queryData = await queryClient.fetchQuery(query);
+    console.info("Edit action: ", queryData);
     await queryClient.invalidateQueries({ queryKey: ["todos"] });
 
     return redirect(`/${todoId}/edit`);
