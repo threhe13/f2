@@ -1,6 +1,7 @@
 import { redirect } from "react-router-dom";
 import { updateTodo } from "../../../../libs/data";
 import { TodoActionParams } from "../../../../types/todo";
+import TokenStorage from "../../../../libs/storage";
 
 export async function action({
   request,
@@ -9,7 +10,9 @@ export async function action({
   request: Request;
   params: unknown;
 }) {
-  const token = localStorage.getItem("token");
+  const storage = new TokenStorage("token");
+
+  const token = storage.getToken();
   if (!token) return;
 
   const { todoId } = params as TodoActionParams;
@@ -20,5 +23,5 @@ export async function action({
   });
   const todo = todoData.data.data;
 
-  return redirect(`/todos/${todo.id}/edit`);
+  return redirect(`/${todo.id}/edit`);
 }

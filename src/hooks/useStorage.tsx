@@ -1,40 +1,47 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import TokenStorage from "../libs/storage";
 
 export const useStorage = (key: string) => {
+  const storage: TokenStorage = useMemo(() => {
+    return new TokenStorage(key);
+  }, [key]);
+
   if (!key) {
-    throw new Error("useStorage에는 키가 반드시 필요합니다.");
+    throw new Error(
+      "[useStorage] Storage를 이용하기 위해서는 키가 반드시 필요합니다."
+    );
   }
 
-  const initializer = useRef((key: string) => {
-    const localStorageItem = localStorage.getItem(key);
+  const initializer = useRef(() => {
+    const storageItem = storage.getToken();
 
-    if (localStorageItem !== null) {
-      if (typeof localStorageItem === "string") {
-        return localStorageItem;
+    if (storageItem !== null) {
+      if (typeof storageItem === "string") {
+        return storageItem;
       }
-      return JSON.parse(localStorageItem);
+      return JSON.parse(storageItem);
     }
-    return undefined;
+    return null;
   });
 
-  const [value, setValue] = useState<string | undefined>(() =>
-    initializer.current(key)
+  const [value, setValue] = useState<string | null>(() =>
+    initializer.current()
   );
 
-  useLayoutEffect(() => setValue(initializer.current(key)), [key]);
+  useLayoutEffect(() => setValue(initializer.current()), [key]);
 
   const set = useCallback(
     (item: string) => {
-      localStorage.setItem(key, item);
+      storage.setToken(item);
       setValue(item);
     },
-    [key, setValue]
+    [storage]
   );
 
   const remove = useCallback(() => {
-    localStorage.removeItem(key);
-    setValue(undefined);
-  }, [key, setValue]);
+    storage.removeToken();
+    setValue(null);
+  }, [storage]);
 
   return { value, set, remove };
 };

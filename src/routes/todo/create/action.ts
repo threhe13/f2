@@ -1,8 +1,11 @@
 import { redirect } from "react-router-dom";
 import { createTodo } from "../../../libs/data";
+import TokenStorage from "../../../libs/storage";
 
 export async function action({ request }: { request: Request }) {
-  const token = localStorage.getItem("token");
+  const storage = new TokenStorage("token");
+
+  const token = storage.getToken();
   if (!token) return;
 
   const formData = await request.formData();
@@ -12,5 +15,5 @@ export async function action({ request }: { request: Request }) {
   });
   const todo = todoData.data.data;
 
-  return redirect(`/todos/${todo.id}`);
+  return redirect(`/${todo.id}`);
 }
