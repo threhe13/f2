@@ -1,4 +1,4 @@
-const Add = ({ size = 24, color = "#000000" }) => (
+const Add = ({ size = 20, color = "#000000" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
