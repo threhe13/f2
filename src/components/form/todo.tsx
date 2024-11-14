@@ -1,40 +1,29 @@
-import { SyntheticEvent, useMemo } from "react";
+import { SyntheticEvent } from "react";
 import { Form } from "react-router-dom";
 
 import { Input } from "../input";
 import { Textarea } from "../text-area";
 
 interface TodoFormInterface {
-  type: "create" | "edit";
+  method: "post" | "put";
   updateForm: (
     e: SyntheticEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
-  isDisabled: boolean;
   title: string;
   content: string;
-  afterEdit?: () => void;
+  children?: React.ReactNode;
 }
 
 export const TodoForm = ({
-  type,
+  method,
   title,
   content,
-  isDisabled,
   updateForm,
-  afterEdit,
+  children,
 }: TodoFormInterface) => {
-  const formMethod: "POST" | "PUT" = useMemo(() => {
-    if (type === "create") {
-      return "POST";
-    } else if (type === "edit") {
-      return "PUT";
-    }
-    return "POST";
-  }, [type]);
-
   return (
     <Form
-      method={formMethod}
+      method={method}
       className="w-full h-full flex flex-col justify-center items-center p-4 gap-4"
     >
       <Input
@@ -53,27 +42,7 @@ export const TodoForm = ({
         value={content}
         onChange={updateForm}
       ></Textarea>
-      <div className="w-full flex justify-end gap-4">
-        {type === "create" && (
-          <button
-            disabled={isDisabled}
-            type="submit"
-            className="bg-blue-600 text-white hover:bg-blue-500 transition-all disabled:bg-slate-300 disabled:text-slate-600"
-          >
-            저장하기
-          </button>
-        )}
-        {type === "edit" && (
-          <button
-            disabled={isDisabled}
-            type="button"
-            onClick={afterEdit}
-            className="bg-blue-600 text-white hover:bg-blue-500 transition-all disabled:bg-slate-300 disabled:text-slate-600"
-          >
-            저장하기
-          </button>
-        )}
-      </div>
+      <div className="w-full flex justify-end gap-4">{children}</div>
     </Form>
   );
 };

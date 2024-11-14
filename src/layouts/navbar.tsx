@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import ReactLogo from "../assets/react.svg";
 import { useStorage } from "../hooks/useStorage";
-import { useEffect } from "react";
+import { Button } from "../components/button";
 
 export function Navbar() {
   const naviator = useNavigate();
@@ -21,7 +23,7 @@ export function Navbar() {
   }, [naviator, value]);
 
   return (
-    <nav className="w-full h-16 flex justify-between fixed top-0 left-0 px-8 py-4">
+    <nav className="w-full h-16 flex justify-between fixed top-0 left-0 px-4 py-4">
       <Link to="/" className="cursor-pointer">
         <div className="flex items-center gap-2">
           <img
@@ -35,17 +37,10 @@ export function Navbar() {
 
       <div className="flex gap-4 items-center">
         {value ? (
-          <button
-            className="px-4 py-1 bg-blue-600 hover:bg-blue-400 text-white"
-            onClick={handleLogout}
-          >
-            로그아웃
-          </button>
+          <Button onClick={handleLogout}>로그아웃</Button>
         ) : (
           <Link to="auth">
-            <button className="px-4 py-1 bg-blue-500 hover:bg-blue-400 text-white">
-              로그인
-            </button>
+            <Button onClick={handleLogout}>로그인</Button>
           </Link>
         )}
       </div>

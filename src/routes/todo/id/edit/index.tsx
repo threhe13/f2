@@ -6,6 +6,7 @@ import { TodoForm } from "../../../../components/form/todo";
 import { todoByIdQuery } from "../loader";
 
 import type { Todo } from "../../../../types/todo";
+import { Button } from "../../../../components/button";
 
 type TodoFormType = {
   title: string;
@@ -53,12 +54,14 @@ export const EditTodoById = () => {
 
   return (
     <TodoForm
-      type="edit"
+      method="put"
       updateForm={updateTodo}
-      isDisabled={isDisabled}
       title={formState.title}
       content={formState.content}
-      afterEdit={saveEdit}
-    />
+    >
+      <Button disabled={isDisabled} type="button" onClick={saveEdit}>
+        저장하기
+      </Button>
+    </TodoForm>
   );
 };

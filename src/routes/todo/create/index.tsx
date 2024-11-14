@@ -1,5 +1,6 @@
 import { SyntheticEvent, useMemo, useState } from "react";
 import { TodoForm } from "../../../components/form/todo";
+import { Button } from "../../../components/button";
 
 type TodoFormType = {
   title: string;
@@ -29,11 +30,14 @@ export function TodoCreate() {
 
   return (
     <TodoForm
-      type="create"
+      method="post"
       updateForm={updateForm}
-      isDisabled={isDisabled}
       title={formState.title}
       content={formState.content}
-    />
+    >
+      <Button disabled={isDisabled} type="submit">
+        저장하기
+      </Button>
+    </TodoForm>
   );
 }
